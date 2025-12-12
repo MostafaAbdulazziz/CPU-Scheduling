@@ -1,0 +1,149 @@
+name: Lab 7 – CPU Scheduling Autograding
+
+on:
+  - push
+  - repository_dispatch
+  - workflow_dispatch
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    container: gcc:latest
+
+    if: github.actor != 'github-classroom[bot]'
+
+    steps:
+      # ---------------- CHECKOUT ----------------
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Disable man-db update
+        run: rm -f /var/lib/man-db/auto-update
+
+      # ---------------- BUILD ----------------
+      - name: Build lab7
+        run: |
+          make
+          chmod +x lab7
+
+      # ================= TESTS =================
+
+      # -------- 01 --------
+      - { name: "01a", id: test-01a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "01a", command: "cat testcases/01a-input.txt | ./lab7 | diff testcases/01a-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "01b", id: test-01b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "01b", command: "cat testcases/01b-input.txt | ./lab7 | diff testcases/01b-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "01c", id: test-01c, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "01c", command: "cat testcases/01c-input.txt | ./lab7 | diff testcases/01c-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "01d", id: test-01d, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "01d", command: "cat testcases/01d-input.txt | ./lab7 | diff testcases/01d-output.txt -", timeout: 10, max-score: 2 } }
+
+      # -------- 02 --------
+      - { name: "02a", id: test-02a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "02a", command: "cat testcases/02a-input.txt | ./lab7 | diff testcases/02a-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "02b", id: test-02b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "02b", command: "cat testcases/02b-input.txt | ./lab7 | diff testcases/02b-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "02c", id: test-02c, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "02c", command: "cat testcases/02c-input.txt | ./lab7 | diff testcases/02c-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "02d", id: test-02d, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "02d", command: "cat testcases/02d-input.txt | ./lab7 | diff testcases/02d-output.txt -", timeout: 10, max-score: 2 } }
+
+      # -------- 03 --------
+      - { name: "03a", id: test-03a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "03a", command: "cat testcases/03a-input.txt | ./lab7 | diff testcases/03a-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "03b", id: test-03b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "03b", command: "cat testcases/03b-input.txt | ./lab7 | diff testcases/03b-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "03c", id: test-03c, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "03c", command: "cat testcases/03c-input.txt | ./lab7 | diff testcases/03c-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "03d", id: test-03d, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "03d", command: "cat testcases/03d-input.txt | ./lab7 | diff testcases/03d-output.txt -", timeout: 10, max-score: 2 } }
+
+      # -------- 04 --------
+      - { name: "04a", id: test-04a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "04a", command: "cat testcases/04a-input.txt | ./lab7 | diff testcases/04a-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "04b", id: test-04b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "04b", command: "cat testcases/04b-input.txt | ./lab7 | diff testcases/04b-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "04c", id: test-04c, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "04c", command: "cat testcases/04c-input.txt | ./lab7 | diff testcases/04c-output.txt -", timeout: 10, max-score: 2 } }
+      - { name: "04d", id: test-04d, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "04d", command: "cat testcases/04d-input.txt | ./lab7 | diff testcases/04d-output.txt -", timeout: 10, max-score: 2 } }
+
+      # -------- 05 -------- 
+      - { name: "05a", id: test-05a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "05a", command: "cat testcases/05a-input.txt | ./lab7 | diff testcases/05a-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "05b", id: test-05b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "05b", command: "cat testcases/05b-input.txt | ./lab7 | diff testcases/05b-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "05c", id: test-05c, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "05c", command: "cat testcases/05c-input.txt | ./lab7 | diff testcases/05c-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "05d", id: test-05d, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "05d", command: "cat testcases/05d-input.txt | ./lab7 | diff testcases/05d-output.txt -", timeout: 10, max-score: 2 } } 
+      
+      # -------- 06 -------- 
+      - { name: "06a", id: test-06a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "06a", command: "cat testcases/06a-input.txt | ./lab7 | diff testcases/06a-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "06b", id: test-06b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "06b", command: "cat testcases/06b-input.txt | ./lab7 | diff testcases/06b-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "06c", id: test-06c, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "06c", command: "cat testcases/06c-input.txt | ./lab7 | diff testcases/06c-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "06d", id: test-06d, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "06d", command: "cat testcases/06d-input.txt | ./lab7 | diff testcases/06d-output.txt -", timeout: 10, max-score: 2 } } 
+      
+      # -------- 07 -------- 
+      - { name: "07a", id: test-07a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "07a", command: "cat testcases/07a-input.txt | ./lab7 | diff testcases/07a-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "07b", id: test-07b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "07b", command: "cat testcases/07b-input.txt | ./lab7 | diff testcases/07b-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "07c", id: test-07c, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "07c", command: "cat testcases/07c-input.txt | ./lab7 | diff testcases/07c-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "07d", id: test-07d, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "07d", command: "cat testcases/07d-input.txt | ./lab7 | diff testcases/07d-output.txt -", timeout: 10, max-score: 2 } } 
+      
+      # -------- 08 -------- 
+      - { name: "08a", id: test-08a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "08a", command: "cat testcases/08a-input.txt | ./lab7 | diff testcases/08a-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "08b", id: test-08b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "08b", command: "cat testcases/08b-input.txt | ./lab7 | diff testcases/08b-output.txt -", timeout: 10, max-score: 2 } } 
+      
+      # -------- 09 -------- 
+      - { name: "09a", id: test-09a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "09a", command: "cat testcases/09a-input.txt | ./lab7 | diff testcases/09a-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "09b", id: test-09b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "09b", command: "cat testcases/09b-input.txt | ./lab7 | diff testcases/09b-output.txt -", timeout: 10, max-score: 2 } } 
+      
+      # -------- 10 -------- 
+      - { name: "10a", id: test-10a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "10a", command: "cat testcases/10a-input.txt | ./lab7 | diff testcases/10a-output.txt -", timeout: 10, max-score: 2 } } 
+      - { name: "10b", id: test-10b, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "10b", command: "cat testcases/10b-input.txt | ./lab7 | diff testcases/10b-output.txt -", timeout: 10, max-score: 2 } } 
+      
+      # -------- 11 -------- 
+      - { name: "11a", id: test-11a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "11a", command: "cat testcases/11a-input.txt | ./lab7 | diff testcases/11a-output.txt -", timeout: 10, max-score: 2 } } 
+      
+      # -------- 12 -------- 
+      - { name: "12a", id: test-12a, uses: classroom-resources/autograding-command-grader@v1, with: { test-name: "12a", command: "cat testcases/12a-input.txt | ./lab7 | diff testcases/12a-output.txt -", timeout: 10, max-score: 2 } }
+      
+      # -------- REPORTER --------
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          TEST-01A_RESULTS: ${{ steps.test-01a.outputs.result }}
+          TEST-01B_RESULTS: ${{ steps.test-01b.outputs.result }}
+          TEST-01C_RESULTS: ${{ steps.test-01c.outputs.result }}
+          TEST-01D_RESULTS: ${{ steps.test-01d.outputs.result }}
+
+          TEST-02A_RESULTS: ${{ steps.test-02a.outputs.result }}
+          TEST-02B_RESULTS: ${{ steps.test-02b.outputs.result }}
+          TEST-02C_RESULTS: ${{ steps.test-02c.outputs.result }}
+          TEST-02D_RESULTS: ${{ steps.test-02d.outputs.result }}
+
+          TEST-03A_RESULTS: ${{ steps.test-03a.outputs.result }}
+          TEST-03B_RESULTS: ${{ steps.test-03b.outputs.result }}
+          TEST-03C_RESULTS: ${{ steps.test-03c.outputs.result }}
+          TEST-03D_RESULTS: ${{ steps.test-03d.outputs.result }}
+
+          TEST-04A_RESULTS: ${{ steps.test-04a.outputs.result }}
+          TEST-04B_RESULTS: ${{ steps.test-04b.outputs.result }}
+          TEST-04C_RESULTS: ${{ steps.test-04c.outputs.result }}
+          TEST-04D_RESULTS: ${{ steps.test-04d.outputs.result }}
+
+          TEST-05A_RESULTS: ${{ steps.test-05a.outputs.result }}
+          TEST-05B_RESULTS: ${{ steps.test-05b.outputs.result }}
+          TEST-05C_RESULTS: ${{ steps.test-05c.outputs.result }}
+          TEST-05D_RESULTS: ${{ steps.test-05d.outputs.result }}
+
+          TEST-06A_RESULTS: ${{ steps.test-06a.outputs.result }}
+          TEST-06B_RESULTS: ${{ steps.test-06b.outputs.result }}
+          TEST-06C_RESULTS: ${{ steps.test-06c.outputs.result }}
+          TEST-06D_RESULTS: ${{ steps.test-06d.outputs.result }}
+
+          TEST-07A_RESULTS: ${{ steps.test-07a.outputs.result }}
+          TEST-07B_RESULTS: ${{ steps.test-07b.outputs.result }}
+          TEST-07C_RESULTS: ${{ steps.test-07c.outputs.result }}
+          TEST-07D_RESULTS: ${{ steps.test-07d.outputs.result }}
+
+          TEST-08A_RESULTS: ${{ steps.test-08a.outputs.result }}
+          TEST-08B_RESULTS: ${{ steps.test-08b.outputs.result }}
+
+          TEST-09A_RESULTS: ${{ steps.test-09a.outputs.result }}
+          TEST-09B_RESULTS: ${{ steps.test-09b.outputs.result }}
+
+          TEST-10A_RESULTS: ${{ steps.test-10a.outputs.result }}
+          TEST-10B_RESULTS: ${{ steps.test-10b.outputs.result }}
+
+          TEST-11A_RESULTS: ${{ steps.test-11a.outputs.result }}
+
+          TEST-12A_RESULTS: ${{ steps.test-12a.outputs.result }}
+
+        with:
+          runners: "test-01a,test-01b,test-01c,test-01d,test-02a,test-02b,test-02c,test-02d,test-03a,test-03b,test-03c,test-03d,test-04a,test-04b,test-04c,test-04d,test-05a,test-05b,test-05c,test-05d,test-06a,test-06b,test-06c,test-06d,test-07a,test-07b,test-07c,test-07d,test-08a,test-08b,test-09a,test-09b,test-10a,test-10b,test-11a,test-12a"
