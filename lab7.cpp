@@ -499,16 +499,224 @@ void Scheduler::HRRN()
 void Scheduler::FB1()
 {
     // Feedback with Quantum 1 Scheduling
+
+    vector<queue<int>> queues(numberOfProcesses + 1);
+    int currentProcessIdx = -1;
+    int currentLevel = 0;
+    int timeInQuantum = 0;
+    
+    for (int time = 0; time < maxSeconds; time++)
+    {
+        if (currentProcessIdx != -1 && timeInQuantum >= 1)
+        {
+            if (processes[currentProcessIdx].remainingTime == 0)
+            {
+                processes[currentProcessIdx].finishTime = time;
+                processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
+                processes[currentProcessIdx].NormTurnTime = (float)processes[currentProcessIdx].turnAroundTime / processes[currentProcessIdx].serveTime;
+            }
+            else
+            {
+                int nextLevel = currentLevel + 1;
+                processes[currentProcessIdx].FBLevel = nextLevel;
+                queues[nextLevel].push(currentProcessIdx);
+            }
+            currentProcessIdx = -1;
+            timeInQuantum = 0;
+        }
+        
+        for (int i = 0; i < numberOfProcesses; i++)
+        {
+            if (processes[i].arrivalTime == time)
+            {
+                processes[i].FBLevel = 0;
+                queues[0].push(i);
+            }
+        }
+        
+        if (currentProcessIdx == -1)
+        {
+            for (int level = 0; level <= numberOfProcesses; level++)
+            {
+                if (!queues[level].empty())
+                {
+                    currentProcessIdx = queues[level].front();
+                    queues[level].pop();
+                    currentLevel = level;
+                    timeInQuantum = 0;
+                    break;
+                }
+            }
+        }
+        
+        if (currentProcessIdx != -1)
+        {
+            *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
+            processes[currentProcessIdx].remainingTime--;
+            timeInQuantum++;
+        }
+        
+        for (int level = 0; level <= numberOfProcesses; level++)
+        {
+            queue<int> tempQ = queues[level];
+            while (!tempQ.empty())
+            {
+                int idx = tempQ.front();
+                tempQ.pop();
+                *(processesPrintingArray + idx * maxSeconds + time) = '.';
+            }
+        }
+    }
 }
 
 void Scheduler::FB2i()
 {
     // Feedback with Increasing Quantum Scheduling
+
+    vector<queue<int>> queues(20);
+    int currentProcessIdx = -1;
+    int currentLevel = 0;
+    int timeInQuantum = 0;
+    int quantum = 1;
+    
+    for (int time = 0; time < maxSeconds; time++)
+    {
+        if (currentProcessIdx != -1 && timeInQuantum >= quantum)
+        {
+            if (processes[currentProcessIdx].remainingTime == 0)
+            {
+                processes[currentProcessIdx].finishTime = time;
+                processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
+                processes[currentProcessIdx].NormTurnTime = (float)processes[currentProcessIdx].turnAroundTime / processes[currentProcessIdx].serveTime;
+            }
+            else
+            {
+                int nextLevel = currentLevel + 1;
+                processes[currentProcessIdx].FBLevel = nextLevel;
+                queues[nextLevel].push(currentProcessIdx);
+            }
+            currentProcessIdx = -1;
+            timeInQuantum = 0;
+        }
+        
+        for (int i = 0; i < numberOfProcesses; i++)
+        {
+            if (processes[i].arrivalTime == time)
+            {
+                processes[i].FBLevel = 0;
+                queues[0].push(i);
+            }
+        }
+        
+        if (currentProcessIdx == -1)
+        {
+            for (int level = 0; level < 20; level++)
+            {
+                if (!queues[level].empty())
+                {
+                    currentProcessIdx = queues[level].front();
+                    queues[level].pop();
+                    currentLevel = level;
+                    quantum = (1 << level); // 2^level
+                    timeInQuantum = 0;
+                    break;
+                }
+            }
+        }
+        
+        if (currentProcessIdx != -1)
+        {
+            *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
+            processes[currentProcessIdx].remainingTime--;
+            timeInQuantum++;
+        }
+        
+        for (int level = 0; level < 20; level++)
+        {
+            queue<int> tempQ = queues[level];
+            while (!tempQ.empty())
+            {
+                int idx = tempQ.front();
+                tempQ.pop();
+                *(processesPrintingArray + idx * maxSeconds + time) = '.';
+            }
+        }
+    }
 }
 
 void Scheduler::AGE(int quantum)
 {
     // Aging Scheduling
+    vector<int> readyList;
+    int currentProcessIdx = -1;
+    int timeQuantum = 0;
+    
+    for (int time = 0; time < maxSeconds; time++)
+    {
+        if (currentProcessIdx != -1)
+        {
+            if (processes[currentProcessIdx].remainingTime == 0)
+            {
+                processes[currentProcessIdx].finishTime = time;
+                processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
+                processes[currentProcessIdx].NormTurnTime = (float)processes[currentProcessIdx].turnAroundTime / processes[currentProcessIdx].serveTime;
+                currentProcessIdx = -1;
+                timeQuantum = 0;
+            }
+            else if (timeQuantum >= quantum)
+            {
+                processes[currentProcessIdx].currentPriority = processes[currentProcessIdx].priority;
+                readyList.push_back(currentProcessIdx);
+                currentProcessIdx = -1;
+                timeQuantum = 0;
+            }
+        }
+        
+        for (int i = 0; i < numberOfProcesses; i++)
+        {
+            if (processes[i].arrivalTime == time)
+            {
+                readyList.push_back(i);
+            }
+        }
+        
+        if (currentProcessIdx == -1 && !readyList.empty())
+        {
+            for (int idx : readyList)
+            {
+                processes[idx].currentPriority++;
+            }
+            
+            int highestPriorityIdx = 0;
+            for (int i = 1; i < readyList.size(); i++)
+            {
+                if (processes[readyList[i]].currentPriority > processes[readyList[highestPriorityIdx]].currentPriority ||
+                    (processes[readyList[i]].currentPriority == processes[readyList[highestPriorityIdx]].currentPriority &&
+                     processes[readyList[i]].arrivalTime < processes[readyList[highestPriorityIdx]].arrivalTime))
+                {
+                    highestPriorityIdx = i;
+                }
+            }
+            
+            currentProcessIdx = readyList[highestPriorityIdx];
+            readyList.erase(readyList.begin() + highestPriorityIdx);
+            
+            processes[currentProcessIdx].currentPriority = processes[currentProcessIdx].priority;
+            timeQuantum = 0;
+        }
+        
+        if (currentProcessIdx != -1)
+        {
+            *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
+            processes[currentProcessIdx].remainingTime--;
+            timeQuantum++;
+        }
+        
+        for (int idx : readyList)
+        {
+            *(processesPrintingArray + idx * maxSeconds + time) = '.';
+        }
+    }
 }
 
 void Scheduler::printTracing()
