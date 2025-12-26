@@ -208,9 +208,7 @@ void Scheduler::FCFS()
     for (int time = 0; time < maxSeconds; time++)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == time) {
-                readyQ.push(i);
-            }
+            if (processes[i].arrivalTime == time) readyQ.push(i);
         }
 
         if (currentProcessIdx == -1 && !readyQ.empty()) {
@@ -221,7 +219,6 @@ void Scheduler::FCFS()
         if (currentProcessIdx != -1) {
             *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
             processes[currentProcessIdx].remainingTime--;
-
             if (processes[currentProcessIdx].remainingTime == 0) {
                 processes[currentProcessIdx].finishTime = time + 1;
                 processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
@@ -247,9 +244,7 @@ void Scheduler::RR(int quantum)
     for (int time = 0; time < maxSeconds; time++)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == time) {
-                readyQ.push(i);
-            }
+            if (processes[i].arrivalTime == time) readyQ.push(i);
         }
 
         if (currentProcessIdx != -1) {
@@ -270,7 +265,6 @@ void Scheduler::RR(int quantum)
             *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
             processes[currentProcessIdx].remainingTime--;
             timeInQuantum++;
-
             if (processes[currentProcessIdx].remainingTime == 0) {
                 processes[currentProcessIdx].finishTime = time + 1;
                 processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
@@ -296,9 +290,7 @@ void Scheduler::SPN()
     for (int time = 0; time < maxSeconds; time++)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == time) {
-                readyList.push_back(i);
-            }
+            if (processes[i].arrivalTime == time) readyList.push_back(i);
         }
 
         if (currentProcessIdx == -1 && !readyList.empty()) {
@@ -315,7 +307,6 @@ void Scheduler::SPN()
         if (currentProcessIdx != -1) {
             *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
             processes[currentProcessIdx].remainingTime--;
-
             if (processes[currentProcessIdx].remainingTime == 0) {
                 processes[currentProcessIdx].finishTime = time + 1;
                 processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
@@ -338,9 +329,7 @@ void Scheduler::SRT()
     for (int time = 0; time < maxSeconds; time++)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == time) {
-                readyList.push_back(i);
-            }
+            if (processes[i].arrivalTime == time) readyList.push_back(i);
         }
 
         if (currentProcessIdx != -1) {
@@ -375,7 +364,6 @@ void Scheduler::SRT()
         if (currentProcessIdx != -1) {
             *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
             processes[currentProcessIdx].remainingTime--;
-
             if (processes[currentProcessIdx].remainingTime == 0) {
                 processes[currentProcessIdx].finishTime = time + 1;
                 processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
@@ -398,9 +386,7 @@ void Scheduler::HRRN()
     for (int time = 0; time < maxSeconds; time++)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == time) {
-                readyList.push_back(i);
-            }
+            if (processes[i].arrivalTime == time) readyList.push_back(i);
         }
 
         if (currentProcessIdx == -1 && !readyList.empty()) {
@@ -425,7 +411,6 @@ void Scheduler::HRRN()
         if (currentProcessIdx != -1) {
             *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
             processes[currentProcessIdx].remainingTime--;
-
             if (processes[currentProcessIdx].remainingTime == 0) {
                 processes[currentProcessIdx].finishTime = time + 1;
                 processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
@@ -450,8 +435,21 @@ void Scheduler::FB1()
     for (int time = 0; time < maxSeconds; time++)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == time) {
-                queues[0].push(i);
+            if (processes[i].arrivalTime == time) queues[0].push(i);
+        }
+
+        if (currentProcessIdx != -1) {
+            bool preempt = false;
+            for (int k = 0; k < currentQLevel; k++) {
+                if (!queues[k].empty()) {
+                    preempt = true;
+                    break;
+                }
+            }
+            if (preempt) {
+                queues[currentQLevel].push(currentProcessIdx);
+                currentProcessIdx = -1;
+                timeInQuantum = 0;
             }
         }
 
@@ -511,8 +509,21 @@ void Scheduler::FB2i()
     for (int time = 0; time < maxSeconds; time++)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == time) {
-                queues[0].push(i);
+            if (processes[i].arrivalTime == time) queues[0].push(i);
+        }
+
+        if (currentProcessIdx != -1) {
+            bool preempt = false;
+            for (int k = 0; k < currentQLevel; k++) {
+                if (!queues[k].empty()) {
+                    preempt = true;
+                    break;
+                }
+            }
+            if (preempt) {
+                queues[currentQLevel].push(currentProcessIdx);
+                currentProcessIdx = -1;
+                timeInQuantum = 0;
             }
         }
 
@@ -578,7 +589,6 @@ void Scheduler::AGE(int quantum)
         }
 
         bool reschedulingNeeded = false;
-        
         if (currentProcessIdx != -1) {
              if (timeInQuantum == quantum) {
                  processes[currentProcessIdx].currentPriority = processes[currentProcessIdx].priority;
@@ -615,9 +625,7 @@ void Scheduler::AGE(int quantum)
                 processes[currentProcessIdx].finishTime = time + 1;
                 processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
                 processes[currentProcessIdx].NormTurnTime = processes[currentProcessIdx].turnAroundTime / processes[currentProcessIdx].serveTime;
-                
                 processes[currentProcessIdx].currentPriority = processes[currentProcessIdx].priority;
-                
                 currentProcessIdx = -1;
                 timeInQuantum = 0;
             }
