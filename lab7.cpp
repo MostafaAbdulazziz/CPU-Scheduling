@@ -439,6 +439,61 @@ void Scheduler::SRT()
 void Scheduler::HRRN()
 {
     // Highest Response Ratio Next Scheduling
+
+    vector<int> readyList;
+    int currentProcessIdx = -1;
+    
+    for (int time = 0; time < maxSeconds; time++)
+    {
+        for (int i = 0; i < numberOfProcesses; i++)
+        {
+            if (processes[i].arrivalTime == time)
+            {
+                readyList.push_back(i);
+            }
+        }
+        
+        if (currentProcessIdx == -1 && !readyList.empty())
+        {
+            int bestIdx = 0;
+            float maxRatio = -1;
+            
+            for (int i = 0; i < readyList.size(); i++)
+            {
+                int idx = readyList[i];
+                int waitTime = time - processes[idx].arrivalTime;
+                float ratio = (waitTime + processes[idx].serveTime) / (float)processes[idx].serveTime;
+                
+                if (ratio > maxRatio || (ratio == maxRatio && processes[idx].arrivalTime < processes[readyList[bestIdx]].arrivalTime))
+                {
+                    maxRatio = ratio;
+                    bestIdx = i;
+                }
+            }
+            
+            currentProcessIdx = readyList[bestIdx];
+            readyList.erase(readyList.begin() + bestIdx);
+        }
+        
+        if (currentProcessIdx != -1)
+        {
+            *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
+            processes[currentProcessIdx].remainingTime--;
+            
+            if (processes[currentProcessIdx].remainingTime == 0)
+            {
+                processes[currentProcessIdx].finishTime = time + 1;
+                processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
+                processes[currentProcessIdx].NormTurnTime = (float)processes[currentProcessIdx].turnAroundTime / processes[currentProcessIdx].serveTime;
+                currentProcessIdx = -1;
+            }
+        }
+        
+        for (int idx : readyList)
+        {
+            *(processesPrintingArray + idx * maxSeconds + time) = '.';
+        }
+    }
 }
 
 void Scheduler::FB1()
