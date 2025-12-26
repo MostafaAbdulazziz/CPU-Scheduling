@@ -209,12 +209,12 @@ void Scheduler::FCFS()
     while (completedProcesses < numberOfProcesses && currentTime < maxSeconds)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == currentTime) {
+            if (processes[i]. arrivalTime == currentTime) {
                 readyQ.push(i);
             }
         }
 
-        if (!processorBusy && !readyQ.empty()) {
+        if (! processorBusy && ! readyQ.empty()) {
             currentProcess = processes[readyQ.front()];
             readyQ.pop();
             processorBusy = true;
@@ -227,8 +227,8 @@ void Scheduler::FCFS()
 
             if (currentProcess.remainingTime == 0) {
                 processes[currentProcess.id].finishTime = currentTime + 1;
-                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
-                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id].serveTime;
+                processes[currentProcess. id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
+                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess. id].serveTime;
                 processorBusy = false;
                 completedProcesses++;
             }
@@ -243,7 +243,7 @@ void Scheduler::FCFS()
     }
 }
 
-void Scheduler::RR(int quantum)
+void Scheduler:: RR(int quantum)
 {
     int currentTime = 0;
     int completedProcesses = 0;
@@ -281,8 +281,8 @@ void Scheduler::RR(int quantum)
 
             if (currentProcess.remainingTime == 0) {
                 processes[currentProcess.id].finishTime = currentTime + 1;
-                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
-                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id].serveTime;
+                processes[currentProcess.id]. turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
+                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id]. serveTime;
                 processorBusy = false;
                 completedProcesses++;
                 timeSlice = 0;
@@ -307,7 +307,7 @@ void Scheduler::SPN()
     while (completedProcesses < numberOfProcesses && currentTime < maxSeconds)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == currentTime) {
+            if (processes[i]. arrivalTime == currentTime) {
                 readyList.push_back(i);
             }
         }
@@ -325,14 +325,14 @@ void Scheduler::SPN()
         }
 
         if (processorBusy) {
-            *(processesPrintingArray + currentProcess.id * maxSeconds + currentTime) = '*';
-            currentProcess.remainingTime--;
+            *(processesPrintingArray + currentProcess. id * maxSeconds + currentTime) = '*';
+            currentProcess. remainingTime--;
             processes[currentProcess.id].remainingTime = currentProcess.remainingTime;
 
             if (currentProcess.remainingTime == 0) {
                 processes[currentProcess.id].finishTime = currentTime + 1;
-                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
-                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id].serveTime;
+                processes[currentProcess. id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
+                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess. id].serveTime;
                 processorBusy = false;
                 completedProcesses++;
             }
@@ -355,14 +355,14 @@ void Scheduler::SRT()
     {
         for (int i = 0; i < numberOfProcesses; i++) {
             if (processes[i].arrivalTime == currentTime) {
-                readyList.push_back(i);
+                readyList. push_back(i);
             }
         }
 
         if (processorBusy) {
             int currentRem = currentProcess.remainingTime;
             int bestReadyIdx = -1;
-            for(int i=0; i<readyList.size(); i++) {
+            for(int i=0; i<readyList. size(); i++) {
                 if(processes[readyList[i]].remainingTime < currentRem) {
                     currentRem = processes[readyList[i]].remainingTime;
                     bestReadyIdx = i;
@@ -376,7 +376,7 @@ void Scheduler::SRT()
             }
         }
 
-        if (!processorBusy && !readyList.empty()) {
+        if (!processorBusy && !readyList. empty()) {
             int bestIdx = 0;
             for (int i = 1; i < readyList.size(); i++) {
                 if (processes[readyList[i]].remainingTime < processes[readyList[bestIdx]].remainingTime) {
@@ -389,13 +389,13 @@ void Scheduler::SRT()
         }
 
         if (processorBusy) {
-            *(processesPrintingArray + currentProcess.id * maxSeconds + currentTime) = '*';
-            currentProcess.remainingTime--;
+            *(processesPrintingArray + currentProcess. id * maxSeconds + currentTime) = '*';
+            currentProcess. remainingTime--;
             processes[currentProcess.id].remainingTime = currentProcess.remainingTime;
 
             if (currentProcess.remainingTime == 0) {
-                processes[currentProcess.id].finishTime = currentTime + 1;
-                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
+                processes[currentProcess.id]. finishTime = currentTime + 1;
+                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess. id].arrivalTime;
                 processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id].serveTime;
                 processorBusy = false;
                 completedProcesses++;
@@ -418,12 +418,12 @@ void Scheduler::HRRN()
     while (completedProcesses < numberOfProcesses && currentTime < maxSeconds)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == currentTime) {
+            if (processes[i]. arrivalTime == currentTime) {
                 readyList.push_back(i);
             }
         }
 
-        if (!processorBusy && !readyList.empty()) {
+        if (! processorBusy && !readyList.empty()) {
             int bestIdx = 0;
             double maxRatio = -1.0;
             for (int i = 0; i < readyList.size(); i++) {
@@ -436,25 +436,25 @@ void Scheduler::HRRN()
                 }
             }
             currentProcess = processes[readyList[bestIdx]];
-            readyList.erase(readyList.begin() + bestIdx);
+            readyList. erase(readyList.begin() + bestIdx);
             processorBusy = true;
         }
 
         if (processorBusy) {
             *(processesPrintingArray + currentProcess.id * maxSeconds + currentTime) = '*';
             currentProcess.remainingTime--;
-            processes[currentProcess.id].remainingTime = currentProcess.remainingTime;
+            processes[currentProcess.id]. remainingTime = currentProcess.remainingTime;
 
             if (currentProcess.remainingTime == 0) {
                 processes[currentProcess.id].finishTime = currentTime + 1;
-                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
-                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id].serveTime;
+                processes[currentProcess.id].turnAroundTime = processes[currentProcess. id].finishTime - processes[currentProcess.id].arrivalTime;
+                processes[currentProcess. id].NormTurnTime = (float)processes[currentProcess. id].turnAroundTime / processes[currentProcess.id].serveTime;
                 processorBusy = false;
                 completedProcesses++;
             }
         }
 
-        for (int idx : readyList) {
+        for (int idx :  readyList) {
             *(processesPrintingArray + idx * maxSeconds + currentTime) = '.';
         }
         currentTime++;
@@ -473,7 +473,7 @@ void Scheduler::FB1()
     while (completedProcesses < numberOfProcesses && currentTime < maxSeconds)
     {
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == currentTime) {
+            if (processes[i]. arrivalTime == currentTime) {
                 processes[i].priority = 0;
                 queues[0].push(i);
             }
@@ -491,19 +491,19 @@ void Scheduler::FB1()
             
             if (preempt || timeSlice >= 1) {
                 int nextLevel = currentLevel;
-                if (!preempt) nextLevel = currentLevel + 1; 
+                if (! preempt) nextLevel = currentLevel + 1; 
                 
                 if (nextLevel >= numberOfProcesses) nextLevel = numberOfProcesses;
                 
                 processes[currentProcess.id].priority = nextLevel;
-                queues[nextLevel].push(currentProcess.id);
+                queues[nextLevel].push(currentProcess. id);
                 processorBusy = false;
                 timeSlice = 0;
             }
         }
 
         if (!processorBusy) {
-            for(int k=0; k < queues.size(); k++) {
+            for(int k=0; k < queues. size(); k++) {
                 if(!queues[k].empty()) {
                     int idx = queues[k].front();
                     queues[k].pop();
@@ -519,13 +519,13 @@ void Scheduler::FB1()
         if (processorBusy) {
             *(processesPrintingArray + currentProcess.id * maxSeconds + currentTime) = '*';
             currentProcess.remainingTime--;
-            processes[currentProcess.id].remainingTime = currentProcess.remainingTime;
+            processes[currentProcess.id].remainingTime = currentProcess. remainingTime;
             timeSlice++;
 
             if (currentProcess.remainingTime == 0) {
                 processes[currentProcess.id].finishTime = currentTime + 1;
-                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
-                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id].serveTime;
+                processes[currentProcess.id].turnAroundTime = processes[currentProcess. id].finishTime - processes[currentProcess.id].arrivalTime;
+                processes[currentProcess. id].NormTurnTime = (float)processes[currentProcess. id].turnAroundTime / processes[currentProcess.id].serveTime;
                 processorBusy = false;
                 completedProcesses++;
                 timeSlice = 0;
@@ -534,7 +534,7 @@ void Scheduler::FB1()
 
         for(int k=0; k<queues.size(); k++) {
              queue<int> temp = queues[k];
-             while(!temp.empty()) {
+             while(! temp.empty()) {
                  int idx = temp.front(); temp.pop();
                  *(processesPrintingArray + idx * maxSeconds + currentTime) = '.';
              }
@@ -585,7 +585,7 @@ void Scheduler::FB2i()
             }
         }
 
-        if (!processorBusy) {
+        if (! processorBusy) {
             for(int k=0; k < queues.size(); k++) {
                 if(!queues[k].empty()) {
                     int idx = queues[k].front();
@@ -602,20 +602,20 @@ void Scheduler::FB2i()
         if (processorBusy) {
             *(processesPrintingArray + currentProcess.id * maxSeconds + currentTime) = '*';
             currentProcess.remainingTime--;
-            processes[currentProcess.id].remainingTime = currentProcess.remainingTime;
+            processes[currentProcess. id].remainingTime = currentProcess.remainingTime;
             timeSlice++;
 
             if (currentProcess.remainingTime == 0) {
                 processes[currentProcess.id].finishTime = currentTime + 1;
-                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
-                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id].serveTime;
+                processes[currentProcess.id].turnAroundTime = processes[currentProcess. id].finishTime - processes[currentProcess.id].arrivalTime;
+                processes[currentProcess. id].NormTurnTime = (float)processes[currentProcess. id].turnAroundTime / processes[currentProcess.id].serveTime;
                 processorBusy = false;
                 completedProcesses++;
                 timeSlice = 0;
             }
         }
 
-        for(int k=0; k<queues.size(); k++) {
+        for(int k=0; k<queues. size(); k++) {
              queue<int> temp = queues[k];
              while(!temp.empty()) {
                  int idx = temp.front(); temp.pop();
@@ -635,31 +635,43 @@ void Scheduler::AGE(int quantum)
     
     while (completedProcesses < numberOfProcesses && currentTime < maxSeconds)
     {
+        // Add newly arrived processes to ready list
         for (int i = 0; i < numberOfProcesses; i++) {
-            if (processes[i].arrivalTime == currentTime) {
-                processes[i].currentPriority = processes[i].priority;
+            if (processes[i]. arrivalTime == currentTime) {
                 readyList.push_back(i);
             }
         }
         
-        bool switching = false;
-        if (processorBusy) {
-            if (timeSlice >= quantum) {
-                processes[currentProcess.id].currentPriority = processes[currentProcess.id].priority;
-                readyList.push_back(currentProcess.id);
-                processorBusy = false;
-                timeSlice = 0;
-                switching = true;
-            }
-        } else {
-            switching = true;
+        // Check if we need to reschedule (quantum expired or processor is idle)
+        bool needsReschedule = false;
+        
+        if (processorBusy && timeSlice >= quantum) {
+            // Quantum expired - add current process back to ready list
+            readyList.push_back(currentProcess. id);
+            processorBusy = false;
+            needsReschedule = true;
+        } else if (!processorBusy && ! readyList.empty()) {
+            needsReschedule = true;
         }
         
-        if (switching && !readyList.empty()) {
-            for(int idx : readyList) {
+        // Perform rescheduling (Xinu aging algorithm)
+        if (needsReschedule) {
+            // Reset current process priority to initial priority (if there was one)
+            if (timeSlice >= quantum && timeSlice > 0) {
+                // The process that just finished its quantum
+                for (int idx : readyList) {
+                    if (idx == readyList. back()) {
+                        processes[idx].currentPriority = processes[idx]. priority;
+                    }
+                }
+            }
+            
+            // Increase priority of all ready processes by 1
+            for (int idx : readyList) {
                 processes[idx].currentPriority++;
             }
             
+            // Select the highest priority process
             int bestIdx = 0;
             for (int i = 1; i < readyList.size(); i++) {
                 if (processes[readyList[i]].currentPriority > processes[readyList[bestIdx]].currentPriority) {
@@ -670,27 +682,31 @@ void Scheduler::AGE(int quantum)
             currentProcess = processes[readyList[bestIdx]];
             readyList.erase(readyList.begin() + bestIdx);
             processorBusy = true;
+            timeSlice = 0;
         }
 
+        // Execute current process
         if (processorBusy) {
             *(processesPrintingArray + currentProcess.id * maxSeconds + currentTime) = '*';
             currentProcess.remainingTime--;
-            processes[currentProcess.id].remainingTime = currentProcess.remainingTime;
+            processes[currentProcess.id].remainingTime = currentProcess. remainingTime;
             timeSlice++;
             
-            if (currentProcess.remainingTime == 0) {
+            if (currentProcess. remainingTime == 0) {
                 processes[currentProcess.id].finishTime = currentTime + 1;
-                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id].finishTime - processes[currentProcess.id].arrivalTime;
-                processes[currentProcess.id].NormTurnTime = (float)processes[currentProcess.id].turnAroundTime / processes[currentProcess.id].serveTime;
+                processes[currentProcess.id].turnAroundTime = processes[currentProcess.id]. finishTime - processes[currentProcess.id].arrivalTime;
+                processes[currentProcess.id]. NormTurnTime = (float)processes[currentProcess.id]. turnAroundTime / processes[currentProcess.id].serveTime;
                 processorBusy = false;
                 completedProcesses++;
                 timeSlice = 0;
             }
         }
 
-        for (int i = 0; i < readyList.size(); i++) {
-            *(processesPrintingArray + readyList[i] * maxSeconds + currentTime) = '.';
+        // Mark ready processes with '.'
+        for (int idx : readyList) {
+            *(processesPrintingArray + idx * maxSeconds + currentTime) = '.';
         }
+        
         currentTime++;
     }
 }
