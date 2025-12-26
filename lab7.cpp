@@ -201,7 +201,58 @@ void Scheduler::stats(int policy, int argument)
 }
 void Scheduler::FCFS()
 {
-    // First Come First Serve Scheduling
+    queue<int> readyQ;
+    int currentProcessIdx = -1;
+    
+    for (int time = 0; time < maxSeconds; time++)
+    {
+        // Check    for new arrivals and add to ready queue
+        for (int i = 0; i < numberOfProcesses; i++)
+        {
+            if (processes[i].arrivalTime == time)
+            {
+                readyQ.push(i);}
+        }
+        
+
+
+
+        // If no current process   get from queue
+        if (currentProcessIdx == -1  && !readyQ.empty())
+        {
+            currentProcessIdx = readyQ.front();
+
+            readyQ.pop();
+        }
+        
+        // Execute current process
+        if (currentProcessIdx != -1)
+        {
+            *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
+
+            processes[currentProcessIdx].remainingTime--;
+            
+            // Check if process finished
+            if (processes[currentProcessIdx].remainingTime == 0)
+            {
+                processes[currentProcessIdx].finishTime = time + 1;
+                
+                processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
+                processes[currentProcessIdx].NormTurnTime = (float)processes[currentProcessIdx].turnAroundTime / processes[currentProcessIdx].serveTime;
+                currentProcessIdx = -1;
+            }
+        }
+        
+        // Mark waiting processes as ready
+        queue<int> tempQ = readyQ;
+        while (!tempQ.empty())
+        {
+            int idx = tempQ.front();
+            tempQ.pop();
+            
+            *(processesPrintingArray + idx * maxSeconds + time) = '.';
+        }
+    }
 }
 
 void Scheduler::RR(int quantum)
