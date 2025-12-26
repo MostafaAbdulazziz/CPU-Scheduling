@@ -358,7 +358,7 @@ void Scheduler::SPN()
             processes[currentProcessIdx].remainingTime--;
             
            
-            
+
             if (processes[currentProcessIdx].remainingTime == 0)
             {
                 processes[currentProcessIdx].finishTime = time + 1;
@@ -379,6 +379,61 @@ void Scheduler::SPN()
 void Scheduler::SRT()
 {
     // Shortest Remaining Time Scheduling
+
+    vector<int> readyList;
+    int currentProcessIdx = -1;
+    
+    for (int time = 0; time < maxSeconds; time++)
+    {
+        for (int i = 0; i < numberOfProcesses; i++)
+        {
+            if (processes[i].arrivalTime == time)
+            {
+                readyList.push_back(i);
+            }
+        }
+        
+        if (currentProcessIdx != -1)
+        {
+            readyList.push_back(currentProcessIdx);
+            currentProcessIdx = -1;
+        }
+        
+        if (!readyList.empty())
+        {
+            int shortestIdx = 0;
+            for (int i = 1; i < readyList.size(); i++)
+            {
+                if (processes[readyList[i]].remainingTime < processes[readyList[shortestIdx]].remainingTime ||
+                    (processes[readyList[i]].remainingTime == processes[readyList[shortestIdx]].remainingTime &&
+                     processes[readyList[i]].arrivalTime < processes[readyList[shortestIdx]].arrivalTime))
+                {
+                    shortestIdx = i;
+                }
+            }
+            currentProcessIdx = readyList[shortestIdx];
+            readyList.erase(readyList.begin() + shortestIdx);
+        }
+        
+        if (currentProcessIdx != -1)
+        {
+            *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
+            processes[currentProcessIdx].remainingTime--;
+            
+            if (processes[currentProcessIdx].remainingTime == 0)
+            {
+                processes[currentProcessIdx].finishTime = time + 1;
+                processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
+                processes[currentProcessIdx].NormTurnTime = (float)processes[currentProcessIdx].turnAroundTime / processes[currentProcessIdx].serveTime;
+                currentProcessIdx = -1;
+            }
+        }
+        
+        for (int idx : readyList)
+        {
+            *(processesPrintingArray + idx * maxSeconds + time) = '.';
+        }
+    }
 }
 
 void Scheduler::HRRN()
