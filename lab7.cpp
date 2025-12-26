@@ -249,7 +249,7 @@ void Scheduler::FCFS()
         {
             int idx = tempQ.front();
             tempQ.pop();
-            
+
             *(processesPrintingArray + idx * maxSeconds + time) = '.';
         }
     }
@@ -258,6 +258,61 @@ void Scheduler::FCFS()
 void Scheduler::RR(int quantum)
 {
     // Round Robin Scheduling
+
+    queue<int> readyQ;
+    int currentProcessIdx = -1;
+    int timeQuantum = 0;
+    
+    for (int time = 0; time < maxSeconds; time++)
+    {
+        if (currentProcessIdx != -1)
+        {
+            if (processes[currentProcessIdx].remainingTime == 0)
+            {
+                processes[currentProcessIdx].finishTime = time;
+                processes[currentProcessIdx].turnAroundTime = processes[currentProcessIdx].finishTime - processes[currentProcessIdx].arrivalTime;
+                processes[currentProcessIdx].NormTurnTime = (float)processes[currentProcessIdx].turnAroundTime / processes[currentProcessIdx].serveTime;
+                currentProcessIdx = -1;
+                timeQuantum = 0;
+            }
+            else if (timeQuantum >= quantum)
+            {
+                readyQ.push(currentProcessIdx);
+                currentProcessIdx = -1;
+                timeQuantum = 0;
+            }
+        }
+        
+        for (int i = 0; i < numberOfProcesses; i++)
+        {
+            if (processes[i].arrivalTime == time)
+            {
+                readyQ.push(i);
+            }
+        }
+        
+        if (currentProcessIdx == -1 && !readyQ.empty())
+        {
+            currentProcessIdx = readyQ.front();
+            readyQ.pop();
+            timeQuantum = 0;
+        }
+        
+        if (currentProcessIdx != -1)
+        {
+            *(processesPrintingArray + currentProcessIdx * maxSeconds + time) = '*';
+            processes[currentProcessIdx].remainingTime--;
+            timeQuantum++;
+        }
+        
+        queue<int> tempQ = readyQ;
+        while (!tempQ.empty())
+        {
+            int idx = tempQ.front();
+            tempQ.pop();
+            *(processesPrintingArray + idx * maxSeconds + time) = '.';
+        }
+    }
 }
 
 void Scheduler::SPN()
